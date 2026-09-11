@@ -542,13 +542,19 @@ public class FormulaSyntaxTests
     }
     
     
+    /// <summary>
+    /// This test checks that the toString() method is working how it is supposed to (checking variables for capitalization
+    /// and doubles especially)
+    /// Expected outcome: valid
+    /// </summary>
     [TestMethod]
-    public void FormulaToString__valid( )
+    public void FormulaToString_TestToString_valid( )
     {
         Formula var = new Formula("a1 + 5.000 - B12 * (c3 / d4)");
         string result = var.ToString();
         Assert.AreEqual("A1+5-B12*(C3/D4)", result);
         
     }
+    
     
 }

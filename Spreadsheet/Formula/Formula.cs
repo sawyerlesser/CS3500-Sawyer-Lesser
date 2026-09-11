@@ -86,9 +86,8 @@ public class Formula
         List<string> tokens = GetTokens(formula);
         _variables = new HashSet<string>();
         _canonicalString = string.Empty;
+
         
-
-
         if (tokens.Count == 0)
         {
             throw new FormulaFormatException("No tokens in string");
