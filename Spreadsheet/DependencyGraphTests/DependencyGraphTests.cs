@@ -11,8 +11,8 @@ using DependencyGraph;
 public class DependencyGraphTests
 {
     /// <summary>
-    ///   TODO:  Explain carefully what this code tests.
-    ///          Also, update in-line comments as appropriate.
+    /// Tests DependencyGraph by adding and removing a bunch of Dependencies. Tests for
+    /// correctness as well as being completed in a timely manner
     /// </summary>
     [TestMethod]
     [Timeout( 2000, CooperativeCancellation = true)]  // 2 second run time limit
@@ -20,7 +20,7 @@ public class DependencyGraphTests
     {
         DependencyGraph dg = new();
 
-        // A bunch of strings to use
+        // A bunch of sample strings to be added to DependencyGraph
         const int size = 200;
         string[] letters = new string[size];
         for ( int i = 0; i < size; i++ )
@@ -28,7 +28,7 @@ public class DependencyGraphTests
             letters[i] = string.Empty + ( (char) ( 'a' + i ) );
         }
 
-        // The correct answers
+        // HashSet of the correct dependents and dependees to test with
         HashSet<string>[] dependents = new HashSet<string>[size];
         HashSet<string>[] dependees = new HashSet<string>[size];
         for ( int i = 0; i < size; i++ )
@@ -37,7 +37,7 @@ public class DependencyGraphTests
             dependees[i] = [];
         }
 
-        // Add a bunch of dependencies
+        // Adds Dependencies to DependencyGraph
         for ( int i = 0; i < size; i++ )
         {
             for ( int j = i + 1; j < size; j++ )
@@ -48,7 +48,7 @@ public class DependencyGraphTests
             }
         }
 
-        // Remove a bunch of dependencies
+        // Removes all Dependencies
         for ( int i = 0; i < size; i++ )
         {
             for ( int j = i + 4; j < size; j += 4 )
@@ -59,7 +59,7 @@ public class DependencyGraphTests
             }
         }
 
-        // Add some back
+        // Adds back all of the dependencies previously added then removed
         for ( int i = 0; i < size; i++ )
         {
             for ( int j = i + 1; j < size; j += 2 )
@@ -70,7 +70,7 @@ public class DependencyGraphTests
             }
         }
 
-        // Remove some more
+        // Again removes dependencies
         for ( int i = 0; i < size; i += 2 )
         {
             for ( int j = i + 3; j < size; j += 3 )
@@ -81,7 +81,7 @@ public class DependencyGraphTests
             }
         }
 
-        // Make sure everything is right
+        // Checks for correctness in DependencyGraph and backing HashSets
         for ( int i = 0; i < size; i++ )
         {
             Assert.IsTrue( dependents[i].SetEquals( new HashSet<string>( dg.GetDependents( letters[i] ) ) ) );

@@ -152,6 +152,8 @@ public class DependencyGraph
     /// <param name="dependent"> the name of the node that cannot be evaluated until after dependee</param>
     public void AddDependency(string dependee, string dependent)
     {
+        
+        //If dependency is already present, return
         if (this._dependees.ContainsKey(dependent) &&
             this._dependees[dependent].Contains(dependee))
         {
