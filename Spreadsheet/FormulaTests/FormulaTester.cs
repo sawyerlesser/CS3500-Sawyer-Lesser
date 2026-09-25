@@ -521,7 +521,7 @@ public class FormulaSyntaxTests
     /// Expected outcome: valid
     /// </summary>
     [TestMethod]
-    public void FormulaGetVariables_TestCaseOnVariables_valid( )
+    public void FormulaGetVariables_TestCaseOnVariables_Valid( )
     {
         Formula var = new Formula("a1 + b2 + B2");
         Assert.HasCount(2, var.GetVariables());
@@ -533,7 +533,7 @@ public class FormulaSyntaxTests
     /// Expected outcome: valid
     /// </summary>
     [TestMethod]
-    public void FormulaGetVariables_TestGetVariables_valid( )
+    public void FormulaGetVariables_TestGetVariables_Valid( )
     {
         Formula var = new Formula("a1 + b2 * (c3 / d4)");
         var varSet = var.GetVariables();
@@ -548,12 +548,480 @@ public class FormulaSyntaxTests
     /// Expected outcome: valid
     /// </summary>
     [TestMethod]
-    public void FormulaToString_TestToString_valid( )
+    public void FormulaToString_TestToString_Valid( )
     {
         Formula var = new Formula("a1 + 5.000 - B12 * (c3 / d4)");
         string result = var.ToString();
         Assert.AreEqual("A1+5-B12*(C3/D4)", result);
         
+    }
+
+    /// <summary>
+    /// Tests that Evaluate correctly calculates basic addition
+    /// expected outcome: valid
+    /// </summary>
+    [TestMethod]
+    public void Evaluate_TestSimpleAddition_Valid()
+    {
+        Formula  var = new Formula("3 + 2");
+        Assert.AreEqual(5.0, (double)var.Evaluate(o => 0));
+    }
+    
+    /// <summary>
+    /// Tests that Evaluate correctly calculates basic subtraction
+    /// expected outcome: valid
+    /// </summary>
+    [TestMethod]
+    public void Evaluate_TestSimpleSubtraction_Valid()
+    {
+        Formula  var = new Formula("3 - 2");
+        Assert.AreEqual(1.0, (double)var.Evaluate(o => 0));
+    }
+    
+    /// <summary>
+    /// Tests that Evaluate correctly calculates basic multiplication
+    /// expected outcome: valid
+    /// </summary>
+    [TestMethod]
+    public void Evaluate_TestSimpleMultiplication_Valid()
+    {
+        Formula  var = new Formula("3 * 2");
+        Assert.AreEqual(6.0, (double)var.Evaluate(o => 0));
+    }
+    
+    /// <summary>
+    /// Tests that Evaluate correctly calculates basic division
+    /// expected outcome: valid
+    /// </summary>
+    [TestMethod]
+    public void Evaluate_TestSimpleDivision_Valid()
+    {
+        Formula  var = new Formula("3 / 2");
+        Assert.AreEqual(1.5, (double)var.Evaluate(o => 0));
+    }
+    /// <summary>
+    /// Tests that Evaluate will cause FormulaError when divided by 0
+    /// expected outcome: FormulaError
+    /// </summary>
+    [TestMethod]
+    public void Evaluate_TestDivisionByZero_Invalid()
+    {
+        Formula var = new Formula("5/0");
+
+        object result = var.Evaluate(s => 0);
+
+        Assert.IsInstanceOfType(result, typeof(FormulaError));
+        Assert.AreEqual("Division by zero", ((FormulaError)result).Reason);
+    }
+    
+    /// <summary>
+    /// Tests that Evaluate follows order of operations with multiplication
+    /// expected outcome: valid
+    /// </summary>
+    [TestMethod]
+    public void Evaluate_TestOrderOfOperationsMultiplication_Valid()
+    {
+        Formula  var = new Formula("3 + 2 * 4");
+        Assert.AreEqual(11.0, (double)var.Evaluate(o => 0));
+    }
+    
+    /// <summary>
+    /// Tests that Evaluate follows order of operations with division
+    /// expected outcome: valid
+    /// </summary>
+    [TestMethod]
+    public void Evaluate_TestOrderOfOperationsDivision_Valid()
+    {
+        Formula  var = new Formula("2 + 4 / 2");
+        Assert.AreEqual(4.0, (double)var.Evaluate(o => 0));
+    }
+    
+    /// <summary>
+    /// Tests that Evaluate correctly calculates multiple multiplications
+    /// expected outcome: valid
+    /// </summary>
+    [TestMethod]
+    public void Evaluate_TestMultipleMultiplications_Valid()
+    {
+        Formula  var = new Formula("3 * 2 * 9");
+        Assert.AreEqual(54.0, (double)var.Evaluate(o => 0));
+    }
+
+    /// <summary>
+    /// Tests that Evaluate correctly calculates multiple divisions
+    /// expected outcome: valid
+    /// </summary>
+    [TestMethod]
+    public void Evaluate_TestMultipleDivisions_Valid()
+    {
+        Formula var = new Formula("36 / 9 / 2");
+        Assert.AreEqual(2.0, (double)var.Evaluate(o => 0));
+    }
+    
+    /// <summary>
+    /// Tests that Evaluate correctly gives precedence to operations in parentheses
+    /// expected outcome: valid
+    /// </summary>
+    [TestMethod]
+    public void Evaluate_TestParenthesisPrecedence_Valid()
+    {
+        Formula  var = new Formula("2*(3+3)");
+        Assert.AreEqual(12.0, (double)var.Evaluate(o => 0));
+    }
+    
+    /// <summary>
+    /// Tests that Evaluate correctly gives precedence to operations in parentheses with order switched
+    /// expected outcome: valid
+    /// </summary>
+    [TestMethod]
+    public void Evaluate_TestParenthesisPrecedence2_Valid()
+    {
+        Formula  var = new Formula("(3+3)*2");
+        Assert.AreEqual(12.0, (double)var.Evaluate(o => 0));
+    }
+    
+    /// <summary>
+    /// Tests that Evaluate correctly gives precedence to operations in parentheses
+    /// a little bit more complex
+    /// expected outcome: valid
+    /// </summary>
+    [TestMethod]
+    public void Evaluate_TestParenthesisPrecedence3_Valid()
+    {
+        Formula  var = new Formula("4 + 2*(2 + 1)");
+        Assert.AreEqual(10.0, (double)var.Evaluate(o => 0));
+    }
+    
+    /// <summary>
+    /// Tests that Evaluate correctly uses variables and returns correct value
+    /// expected outcome: valid
+    /// </summary>
+    [TestMethod]
+    public void Evaluate_TestVariables_Valid()
+    {
+        Formula  var = new Formula("A1 * 2");
+        Assert.AreEqual(20.0, (double)var.Evaluate(o => 10));
+    }
+    
+    /// <summary>
+    /// Tests that Evaluate correctly uses multiple variables and returns correct value
+    /// expected outcome: valid
+    /// </summary>
+    [TestMethod]
+    public void Evaluate_TestMultipleVariables_Valid()
+    {
+        Formula  var = new Formula("A1 * B2");
+        Assert.AreEqual(100.0, (double)var.Evaluate(o => 10));
+    }
+    
+    /// <summary>
+    /// Tests that division by a variable containing 0 causes FormulaError
+    /// Expected outcome: FormulaError
+    /// </summary>
+    [TestMethod]
+    public void Evaluate_TestVariableDivisionByZero_Invalid()
+    {
+        Formula var = new Formula("5/A1");
+
+        object result = var.Evaluate(s => 0);
+
+        Assert.IsInstanceOfType(result, typeof(FormulaError));
+        Assert.AreEqual("Division by zero", ((FormulaError)result).Reason);
+    }
+    
+    /// <summary>
+    /// Tests that the value can be a negative number
+    /// expected outcome: valid
+    /// </summary>
+    [TestMethod]
+    public void Evaluate_TestNegativeOutput_Invalid()
+    {
+        Formula var = new Formula("5-10");
+        Assert.AreEqual(-5.0, (double)var.Evaluate(o => 0));
+
+        
+    }
+
+
+    /// <summary>
+    /// Tests that == works
+    /// expected outcome: valid
+    /// </summary>
+    [TestMethod]
+    public void EqualsOperator_TestEqualsSameFormula_Valid()
+    {
+        Formula f1 = new Formula("2+3");
+        Formula f2 = new Formula("2+3");
+        Assert.IsTrue(f1 == f2);
+    }
+    
+    /// <summary>
+    /// Tests that == works and shows this is false
+    /// expected outcome: false
+    /// </summary>
+    [TestMethod]
+    public void EqualsOperator_TestEqualsDifferentFormula_False()
+    {
+        Formula f1 = new Formula("3+3");
+        Formula f2 = new Formula("2+3");
+        Assert.IsFalse(f1 == f2);
+    }
+    
+    /// <summary>
+    /// Tests that != works with different formulas
+    /// expected outcome: true
+    /// </summary>
+    [TestMethod]
+    public void NotEqualsOperator_TestNotEqualsDifferentFormula_Valid()
+    {
+        Formula f1 = new Formula("3+3");
+        Formula f2 = new Formula("2+4");
+        Assert.IsTrue(f1 != f2);
+    }
+    
+    /// <summary>
+    /// Tests that != works with same formulas
+    /// expected outcome: false
+    /// </summary>
+    [TestMethod]
+    public void NotEqualsOperator_TestNotEqualsSameFormula_False()
+    {
+        Formula f1 = new Formula("3+3");
+        Formula f2 = new Formula("3+3");
+        Assert.IsFalse(f1 != f2);
+    }
+    
+    /// <summary>
+    /// Tests that Equals method works with same formula
+    /// </summary>
+    [TestMethod]
+    public void Equals_TestEqualsSameFormula_Valid()
+    {
+        Formula f1 = new Formula("2+3");
+        Formula f2 = new Formula("2+3");
+        Assert.IsTrue(f1.Equals(f2));
+    }
+    
+    /// <summary>
+    /// Tests that Equals method works with different formulas
+    /// expected outcome: false
+    /// </summary>
+    [TestMethod]
+    public void Equals_TestEqualsDifferentFormula_Valid()
+    {
+        Formula f1 = new Formula("2+3");
+        Formula f2 = new Formula("3+3");
+        Assert.IsFalse(f1.Equals(f2));
+    }
+
+    /// <summary>
+    /// Tests that Equals returns false when one object is null
+    /// expected outcome: false
+    /// </summary>
+    [TestMethod]
+    public void Equals_Null_False()
+    {
+        Formula var = new Formula("2+2");
+        
+        Assert.IsFalse(var.Equals(null));
+    }
+    
+    /// <summary>
+    /// Tests that Equals returns false when one object is not a formula object
+    /// expected outcome: false
+    /// </summary>
+    [TestMethod]
+    public void Equals_NotFormulaObject_False()
+    {
+        Formula var = new Formula("2+2");
+        
+        Assert.IsFalse(var.Equals("2+2"));
+    }
+    
+    /// <summary>
+    /// Tests that 2 identical formulas have the same HashCode
+    /// expected outcome: valid
+    /// </summary>
+    [TestMethod]
+    public void GetHashCode_EqualFormulas_valid()
+    {
+        Formula f1 = new Formula("2+3");
+        Formula f2 = new Formula("2+3");
+
+        Assert.AreEqual(f1.GetHashCode(), f2.GetHashCode());
+    }
+    
+    /// <summary>
+    /// This tests that evaluate will work on only a variable
+    /// expected outcome: valid
+    /// </summary>
+    [TestMethod]
+    public void Evaluate_TestStandaloneVariable_Valid()
+    {
+        Formula var = new Formula("A1");
+
+        Assert.AreEqual(10.0, (double)var.Evaluate(s => 10));
+    }
+    
+    /// <summary>
+    /// Tests variable division where the variable is not 0
+    /// expected outcome: valid
+    /// </summary>
+    [TestMethod]
+    public void Evaluate_TestVariableDivision_Valid()
+    {
+        Formula var = new Formula("10 / A1");
+
+        Assert.AreEqual(5.0, (double)var.Evaluate(o => 2));
+    }
+
+    /// <summary>
+    /// Tests what happens when a variable is undefined
+    /// expected outcome: FormulaError
+    /// </summary>
+    /// <exception cref="ArgumentException"></exception>
+    [TestMethod]
+    public void Evaluate_TestUndefinedVariable_Invalid()
+    {
+        Formula var = new Formula("A1");
+        
+        object result = var.Evaluate(o =>
+        {
+            throw new ArgumentException();
+        });
+        
+        Assert.IsInstanceOfType(result, typeof(FormulaError));
+        Assert.AreEqual("Variable is undefined", ((FormulaError)result).Reason);
+    }
+    
+    /// <summary>
+    /// Tests what happens when you try to multiply with an undefined variable
+    /// expected outcome: valid
+    /// </summary>
+    /// <exception cref="ArgumentException"></exception>
+    [TestMethod]
+    public void Evaluate_TestUndefinedVariableMultiplication_Invalid()
+    {
+        Formula var = new Formula("2*A1");
+
+        object result = var.Evaluate(o =>
+        {
+            throw new ArgumentException();
+        });
+
+        Assert.IsInstanceOfType(result, typeof(FormulaError));
+        Assert.AreEqual("Variable is undefined", ((FormulaError)result).Reason);
+    }
+    
+    /// <summary>
+    /// Tests what happens when you try to multiply with an undefined variable
+    /// expected outcome: valid
+    /// </summary>
+    /// <exception cref="ArgumentException"></exception>
+    [TestMethod]
+    public void Evaluate_TestUndefinedVariableDivision_Invalid()
+    {
+        Formula var = new Formula("10 / A1");
+
+        object result = var.Evaluate(o =>
+        {
+            throw new ArgumentException();
+        });
+
+        Assert.IsInstanceOfType(result, typeof(FormulaError));
+        Assert.AreEqual("Variable is undefined", ((FormulaError)result).Reason);
+    }
+    
+    /// <summary>
+    /// Tests subtraction inside parenthesis
+    /// expected outcome: valid
+    /// </summary>
+    [TestMethod]
+    public void Evaluate_TestSubtractionInsideParentheses_Valid()
+    {
+        Formula var = new Formula("(5 - 2)");
+        Assert.AreEqual(3.0, (double)var.Evaluate(o => 0));
+    }
+    
+    /// <summary>
+    /// tests division after parentheses
+    /// expected outcome: valid
+    /// </summary>
+    [TestMethod]
+    public void Evaluate_TestDivisionAfterParentheses_Valid()
+    {
+        Formula var = new Formula("(3+3)/2");
+        Assert.AreEqual(3.0, (double)var.Evaluate(o => 0));
+    }
+
+    /// <summary>
+    /// tests that when a number in parentheses that is being used to divide equals zero,
+    /// it results in FormulaError
+    /// expected outcome: FormulaError
+    /// </summary>
+    [TestMethod]
+    public void Evaluate_TestDivisionWithZeroWithParenthesis_Invalid()
+    {
+        Formula var = new Formula("10 / (1 - 1)");
+        object result = var.Evaluate(o => 0);
+
+        Assert.IsInstanceOfType(result, typeof(FormulaError));
+        Assert.AreEqual("Division by zero", ((FormulaError)result).Reason);
+    }
+    
+    
+    /// <summary>
+    /// Tests what happens if you only have a value within parentheses
+    /// expected outcome: valid
+    /// </summary>
+    [TestMethod]
+    public void Evaluate_TestJustParenthesis_Valid()
+    {
+        Formula var = new Formula("(5)");
+        Assert.AreEqual(5.0, (double)var.Evaluate(s => 0));
+    }
+
+    /// <summary>
+    /// Tests when there is division before parentheses
+    /// expected outcome: valid
+    /// </summary>
+    [TestMethod]
+    public void Evaluate_TestDivisionBeforeParenthesis_Valid()
+    {
+        Formula var = new Formula("50/(8+2)");
+        Assert.AreEqual(5.0, (double)var.Evaluate(s => 0));
+    }
+    
+    /// <summary>
+    /// Tests multiple additions
+    /// expected outcome: valid
+    /// </summary>
+    [TestMethod]
+    public void Evaluate_TestMultipleAdditions_Valid()
+    {
+        Formula var = new Formula("2+3+4+5");
+        Assert.AreEqual(14.0, (double)var.Evaluate(s => 0));
+    }
+    
+    /// <summary>
+    /// Tests multiple subtractions
+    /// expected outcome: valid
+    /// </summary>
+    [TestMethod]
+    public void Evaluate_TestMultipleSubtractions_Valid()
+    {
+        Formula var = new Formula("10-2-3-4");
+        Assert.AreEqual(1.0, (double)var.Evaluate(s => 0));
+    }
+    
+    /// <summary>
+    /// Formula Constructor test. Tests when there is more opening than closing parentheses
+    /// expected outcome: FormulaFormatException
+    /// </summary>
+    [TestMethod]
+    public void Formula_MoreClosingThanOpening_Invalid()
+    {
+        Assert.Throws<FormulaFormatException>(() => _ = new Formula("1 + 1)"));
     }
     
     

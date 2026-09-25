@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DependencyGraph", "Dependen
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DependencyGraphTests", "DependencyGraphTests\DependencyGraphTests.csproj", "{16AA2A5B-C1BC-4C50-ACD9-DD700F2FAEFC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PS2GradingTests", "PS2GradingTests\PS2GradingTests.csproj", "{861312E0-8D1C-453A-987D-6D29C585F27B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{16AA2A5B-C1BC-4C50-ACD9-DD700F2FAEFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16AA2A5B-C1BC-4C50-ACD9-DD700F2FAEFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16AA2A5B-C1BC-4C50-ACD9-DD700F2FAEFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{861312E0-8D1C-453A-987D-6D29C585F27B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{861312E0-8D1C-453A-987D-6D29C585F27B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{861312E0-8D1C-453A-987D-6D29C585F27B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{861312E0-8D1C-453A-987D-6D29C585F27B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
